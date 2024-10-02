@@ -15,7 +15,7 @@ export const insLogMiddleware = `INSERT INTO
                                                 select
                                                     ll.log_id
                                                 from
-                                                    logger.log_login ll
+                                                    "user".use_login ll
                                                 where
                                                     ll.log_token = $4
                                                 limit

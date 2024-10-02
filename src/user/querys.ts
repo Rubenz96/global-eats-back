@@ -57,7 +57,7 @@ export const insLogin = `INSERT INTO
                             );`;
 
 export const updDeacToken = `UPDATE
-                                    logger.log_login
+                                    "user".use_login
                                 SET
                                     log_sta_id = 16,
                                     log_logout_date = now()
@@ -66,7 +66,7 @@ export const updDeacToken = `UPDATE
                                         select
                                             ll.log_id
                                         from
-                                            logger.log_login ll
+                                            "user".use_login ll
                                             left join meeting.log_system ls on ls.log_sys_log_id = ll.log_id
                                             and ls.log_sys_date + interval '1 hours' > now ()
                                         where
@@ -75,7 +75,7 @@ export const updDeacToken = `UPDATE
                                     );`;
 
 export const updRevToken = `UPDATE
-                                    logger.log_login
+                                    "user".use_login
                                 SET
                                     log_sta_id = 17
                                 WHERE
@@ -83,14 +83,14 @@ export const updRevToken = `UPDATE
                                         select
                                             ll.log_id
                                         from
-                                            logger.log_login ll
+                                            "user".use_login ll
                                         where
                                             ll.log_sta_id = 15
                                             and ll.log_revoke_date < now()
                                     );`;
 
 export const updDeacSpecToken = `UPDATE
-                                        logger.log_login
+                                        "user".use_login
                                     SET
                                         log_sta_id = 16,
                                         log_logout_date = now()
