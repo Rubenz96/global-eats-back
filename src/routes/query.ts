@@ -1,3 +1,4 @@
+import { log } from "../../config/log";
 
 export const insLogMiddleware = `INSERT INTO
                                         logger.log_system (
@@ -107,7 +108,7 @@ export function selApi({ token = '', url = '', httpMethod = '' }) {
                     ag.gat_uri = '${url}'
                     and upper('${httpMethod}') = crt.req_typ_method
                     and gat_sta_id = 11;`;
-    //console.log(queryX)
+    // log({value: queryX });
     return queryX;
 
 }

@@ -55,7 +55,7 @@ export const tokenValid = (req: Request, res: Response, next: NextFunction) => {
     if (req.info_route && req.info_route.gat_token_valid) {
         //   let token = servicios.desencriptar(req.headers['authorization']);
         let token = req.headers['authorization'];
-        console.log(token);
+        // console.log(token);
 
         if (!token) {
             log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Error JWT: Es necesario el token de autenticación' });
@@ -64,7 +64,7 @@ export const tokenValid = (req: Request, res: Response, next: NextFunction) => {
             token = token.replace('Bearer ', '');
             poolSelect.query(selApi({ token, httpMethod: req.method, url: req.originalUrl }))
                 .then(result => {
-                    if (result.rowCount == 0) {
+                    if (result.rowCount == 0 || !result.rows[0].token_info) {
                         log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Error JWT: Token expirado' });
                         return res.status(TOKEN_EXPIRED).send({ msg: 'Token expirado' });
                     }

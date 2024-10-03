@@ -1,11 +1,11 @@
 import { Router } from 'express';
 const routerUser = Router();
 
-//AUTH
-import * as auth from './auth';
-routerUser.post('/login', auth.login);
-routerUser.post('/logout', auth.logout);
-routerUser.post('/recovery', auth.recovery);
-routerUser.post('/password', auth.password); 
+//USER
+import * as user from './services';
+routerUser.post('/permission', user.sidebarConfig);
+// routerUser.post('/logout', user.logout);
+// routerUser.post('/recovery', user.recovery);
+// routerUser.post('/password', user.password); 
 
 export default routerUser;
