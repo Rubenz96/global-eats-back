@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { pool } from '../../config/db';
 import { log } from '../../config/log';
 import { NOT_FOUND, OK } from '../../config/status_code';
-import { selUserSideBarPermission } from './query';
+import { selUser, selUserSideBarPermission, updUser } from './query';
 
 export async function sidebarConfig(req: Request, res: Response) {
     const client = await pool.connect();
@@ -23,6 +23,45 @@ export async function sidebarConfig(req: Request, res: Response) {
         return res.status(NOT_FOUND).json({
             msg: "Error"
         });
+    } finally {
+        client.release();
+    }
+}
+
+export async function getUserBBDD(req: Request, res: Response) {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        let user_id_ = req.user?.use_id_;
+        let resUser = await client.query(selUser, [user_id_]);
+        await client.query('COMMIT');
+        return res.status(OK).json({
+            user: (resUser && resUser.rowCount && resUser.rowCount > 0) ? resUser.rows[0] : false,
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        // log({ msg: error });
+    } finally {
+        client.release();
+    }
+}
+
+export async function setUserBBDD(req: Request, res: Response) {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        let user_id_ = req.user?.use_id_;
+        let { name, lastname, username, } = req.body;
+        let resUser = await client.query(updUser, [name, lastname, username, user_id_]);
+        await client.query('COMMIT');
+        return res.status(OK).json({
+            user: (resUser && resUser.rowCount && resUser.rowCount > 0) ? resUser.rows[0] : false,
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        // log({ msg: error });
     } finally {
         client.release();
     }

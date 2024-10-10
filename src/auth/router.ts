@@ -8,4 +8,4 @@ routerAuth.post('/logout', auth.logout);
 routerAuth.post('/recovery', auth.recovery);
 routerAuth.post('/password', auth.password); 
 
-export default routerAuth;
+export default routerAuth; 

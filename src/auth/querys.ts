@@ -161,12 +161,12 @@ export function updUsePassword({ username = '', use_id = 0 }) {
     return queryX;
 }
 
-export function insUsePassword({ username = '', newHash = '', use_id = 0 }) {
+export function insUsePassword({ username = '', newPass = '', use_id = 0 }) {
     let filter = username ? ` and uu.use_username = '${username}' ` : `  and uu.use_id = ${use_id} `;
     let queryX = `INSERT INTO
                         "user".use_password (pas_value, pas_use_id) (
                             select
-                                '${newHash}' as pas_value,
+                                "user".generate_bcrypt_hash('${newPass}') as pas_value,
                                 uu.use_id as pas_use_id
                             from
                                 "user".use_user uu

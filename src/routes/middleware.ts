@@ -150,7 +150,7 @@ export const dataValid = (req: Request, res: Response, next: NextFunction) => {
                 if (!eval(condition.gat_con_condition)) {
                     log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Validación de datos fallida.' });
                     return res.status(BAD_GATEWAY).send({ msg: 'Data invalid.' });
-                }
+                } 
             } catch (error) {
                 console.log(error);
 

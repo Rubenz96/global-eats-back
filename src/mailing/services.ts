@@ -6,11 +6,12 @@ import { returnTemplate } from './templates';
 interface NotificationData {
     type?: string;
     data?: Record<string, any>;
+    reciever?: string;
     files?: Array<{ filename: string, path: string, cid?: string }>;
     cc_list?: string[];
 }
 
-async function sendNotification({ type = '', data = {}, files = [], cc_list = [] }: NotificationData): Promise<void> {
+async function sendNotification({ type = '', data = {}, files = [], reciever = '', cc_list = [] }: NotificationData): Promise<void> {
     console.log({ type, data, files, cc_list });
     console.log(__dirname);
     try {
@@ -26,13 +27,13 @@ async function sendNotification({ type = '', data = {}, files = [], cc_list = []
             },
         });
 
-        const info = returnTemplate({ template: type, data: data });
+        const info = returnTemplate(type, data);
         if (!info) {
             return;
         }
         await transporter.sendMail({
-            from: `'CodeCrafters AR Tech' <${mailConfig.user}>`,
-            to: ['rcontreras@codecraftersartech.com', 'amanquelipe@codecraftersartech.com'],
+            from: `'Global Eats' <${mailConfig.user}>`,
+            to: reciever,
             subject: info.subject,
             html: info.html,
             cc: cc_list,

@@ -1,6 +1,6 @@
 export const mailConfig = {
-    user: 'rcontreras@codecraftersartech.com',
-    pass: 'Tequila123#',
+    user: 'jimartinez@globaleats.cl',
+    pass: 'ymej vrlj veag bpuy',
     smtp: 'smtp.gmail.com',
     port: 465
-};  
+};

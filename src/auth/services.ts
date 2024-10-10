@@ -104,17 +104,15 @@ export async function recovery(req: Request, res: Response) {
         await client.query('BEGIN');
         let username = req.body.username;
         let newPass = getRandom(8);
-        let newHash = await hash(newPass, saltRoundsHash);
         log({ type: 'INFO', value: newPass, description: `${username} - Nueva contraseña.` });
-        log({ type: 'INFO', value: newHash, description: `${username} - Nuevo HASH.` });
         let updPassRes = await client.query(updUsePassword({ username }));
         console.log(updPassRes.rows);
 
-        if (updPassRes.rows && updPassRes.rows.length > 0 && newPass && newHash) {
-            let resInsPass = await client.query(insUsePassword({ username, newHash }));
+        if (updPassRes.rows && updPassRes.rows.length > 0 && newPass) {
+            let resInsPass = await client.query(insUsePassword({ username, newPass }));
             if (resInsPass.rows && resInsPass.rows.length > 0) {
                 await client.query('COMMIT');
-                sendNotification({ type: 'NEW-HASH', data: { newPass }, cc_list: [resInsPass.rows[0].mail] });
+                sendNotification({ type: 'NEW-HASH', data: { newPass }, reciever: resInsPass.rows[0].mail });
                 return res.status(OK).json({
                     msg: "Exitoso",
                 });
@@ -147,11 +145,11 @@ export async function password(req: Request, res: Response) {
     try {
         await client.query('BEGIN');
         let newPass = req.body.newPass;
-        let newHash = await hash(newPass, saltRoundsHash);
+
         let updPassRes = await client.query(updUsePassword({ use_id: req.user?.use_id }));
 
-        if (updPassRes.rows && updPassRes.rows.length > 0 && newPass && newHash) {
-            let resInsPass = await client.query(insUsePassword({ use_id: req.user?.use_id, newHash }));
+        if (updPassRes.rows && updPassRes.rows.length > 0 && newPass) {
+            let resInsPass = await client.query(insUsePassword({ use_id: req.user?.use_id, newPass }));
             console.log(resInsPass.rows);
 
             if (resInsPass.rows && resInsPass.rows.length > 0) {

@@ -88,3 +88,25 @@ export function selUserSideBarPermission({ use_id = 0 }) {
     return queryX;
 
 }
+
+
+export const selUser = `select
+                        uu.use_name as "name",
+                        uu.use_lastname as lastname,
+                        uu.use_username as username
+                    from
+                        "user".use_user uu
+                    where
+                        uu.use_id_ = $1
+                        and uu.use_sta_id = 1;`;
+
+
+export const updUser = `UPDATE
+                            "user".use_user
+                            SET
+                                use_name = $1,
+                                use_lastname = $2,
+                                use_username = $3
+                            WHERE
+                            use_id_ = $4;`;
+
