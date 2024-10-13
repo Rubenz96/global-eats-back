@@ -84,7 +84,7 @@ export function selUserSideBarPermission({ use_id = 0 }) {
                         ) t2
                     order by
                         sid_com_weight desc`;
-    log({ value: queryX });
+    // log({ value: queryX });
     return queryX;
 
 }
