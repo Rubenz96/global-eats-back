@@ -1,23 +1,4 @@
--- DROP SCHEMA api;
-
-CREATE SCHEMA api AUTHORIZATION postgres;
-
--- DROP SCHEMA config;
-
-CREATE SCHEMA config AUTHORIZATION postgres;
-
--- DROP SCHEMA platform;
-
-CREATE SCHEMA platform AUTHORIZATION globaleats;
-
--- DROP SCHEMA product;
-
-CREATE SCHEMA product AUTHORIZATION globaleats;
-
--- DROP SCHEMA sale;
-
-CREATE SCHEMA sale AUTHORIZATION globaleats;
-
--- DROP SCHEMA "user";
-
-CREATE SCHEMA "user" AUTHORIZATION globaleats;
+INSERT INTO
+	product.pro_inventory (inv_pro_id, inv_quantity, inv_last_update)
+VALUES
+($1, $2, now());

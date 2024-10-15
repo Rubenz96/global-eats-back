@@ -1,11 +1,11 @@
 import { Router } from 'express';
-const routerUser = Router();
+const routerProduct = Router();
 
 //USER
-import * as user from './services';
-routerUser.post('/permission', user.sidebarConfig);
-// routerUser.post('/logout', user.logout);
-// routerUser.post('/recovery', user.recovery); 
-// routerUser.post('/password', user.password); 
+import * as product from './services';
+routerProduct.post('/new', product.newProduct);
+// routerProduct.post('/logout', user.logout);
+// routerProduct.post('/recovery', user.recovery); 
+// routerProduct.post('/password', user.password); 
 
-export default routerUser;
+export default routerProduct;
