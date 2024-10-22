@@ -13,4 +13,8 @@ router.use('/user', routerUser);
 
 import routerProduct from '../product/router';
 router.use('/product', routerProduct);
+
+import routerClient from '../client/router';
+router.use('/client', routerClient);
+
 export default router;

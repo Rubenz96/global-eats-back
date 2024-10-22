@@ -7,7 +7,7 @@ import { log } from "../../config/log";
 
 // }
 
-export const insProduct = `INSERT INTO
+export const insClient = `INSERT INTO
                                 product.pro_product (
                                     pro_name,
                                     pro_description
@@ -18,7 +18,7 @@ export const insProduct = `INSERT INTO
                                     $2
                                 ) returning pro_id;`;
 
-export const insProductPrice = `INSERT INTO
+export const insClientPrice = `INSERT INTO
                                     product.pro_price_history (
                                         pri_his_pro_id,
                                         pri_his_price,
@@ -29,13 +29,13 @@ export const insProductPrice = `INSERT INTO
                                 VALUES
                                 ($1, $2, $3, $4, $5);`;
 
-export const insProductInventory = `INSERT INTO
+export const insClientInventory = `INSERT INTO
                                     product.pro_inventory (inv_pro_id, inv_quantity, inv_last_update)
                                 VALUES
                                 ($1, $2, now());`;
 
 
-export function selProducts(filter = '') {
+export function selClients(filter = '') {
     filter = filter ? filter.toLowerCase() : '';
     let filtro = filter ? ` (lower(pro_name) like '%${filter}%' or lower(cs.sta_value) like '%${filter}%' or lower(pro_description) like '%${filter}%') ` : ` true `;
     let queryX = `select
@@ -63,7 +63,7 @@ export function selProducts(filter = '') {
                         return queryX;
 }
 
-export function countProducts(filter ='') {
+export function countClients(filter ='') {
     filter = filter ? filter.toLowerCase() : '';
     let filtro = filter ? ` (lower(pro_name) like '%${filter}%' or lower(cs.sta_value) like '%${filter}%' or lower(pro_description) like '%${filter}%') ` : ` true `;
     let queryX = `select
@@ -91,7 +91,7 @@ export function countProducts(filter ='') {
     return queryX;
 }
 
-export function updateProduct({use_id = 0, pro_id = 0, comment = 'UPDATE'}) {
+export function updateClient({use_id = 0, pro_id = 0, comment = 'UPDATE'}) {
     let queryX = `INSERT INTO
                         product.pro_product_history (
                             pro_his_old_price,
@@ -111,7 +111,7 @@ export function updateProduct({use_id = 0, pro_id = 0, comment = 'UPDATE'}) {
     return queryX;
 }
 
-export const delProductQue = `UPDATE
+export const delClientQue = `UPDATE
                                 product.pro_product
                             SET
                                 pro_sta_id = 33

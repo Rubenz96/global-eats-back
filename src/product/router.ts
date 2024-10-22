@@ -5,7 +5,6 @@ const routerProduct = Router();
 import * as product from './services';
 routerProduct.post('/new', product.newProduct);
 routerProduct.post('/list', product.listProducts);
-// routerProduct.post('/recovery', user.recovery); 
-// routerProduct.post('/password', user.password); 
+routerProduct.post('/delete', product.delProduct);
 
 export default routerProduct;
