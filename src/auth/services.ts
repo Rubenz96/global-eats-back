@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'express';
 import { pool } from '../../config/db';
-import { insLogin, insUsePassword, selSidebarConfig, selUser, selUseUserLogin, updDeacSpecToken, updUsePassword } from './querys';
+import { insLogin, insUsePassword, selPageConfig, selSidebarConfig, selUser, selUseUserLogin, updDeacSpecToken, updUsePassword } from './querys';
 import { saltRoundsHash, seedToken } from '../../config/general';
 import { sign } from 'jsonwebtoken';
 import { hash } from 'bcrypt';
@@ -40,7 +40,9 @@ export async function login(req: Request, res: Response) {
         };
 
         let token = sign(tokenData, seedToken, { expiresIn: 60 * 60 * 24 });
+        let resSelPageComponent = await client.query(selPageConfig({ use_id: dataUser.rows[0].use_id }));
 
+        log({ value: resSelPageComponent });
         log({ value: tokenData });
         log({ value: token });
         // let sidebar = await client.query(selSidebarConfig);
@@ -54,6 +56,7 @@ export async function login(req: Request, res: Response) {
                 msg: "Login exitoso",
                 userData: tokenData,
                 token: token,
+                permissions: resSelPageComponent.rows
                 // sidebar: sidebar.rows
             });
         } else {

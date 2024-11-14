@@ -1,3 +1,1 @@
-/clients
-/clients/edit
-/clients/new
+ ser
