@@ -54,7 +54,7 @@ export const insLogin = `INSERT INTO
                             (
                                 $1,
                                 $2
-                            );`;
+                            ) returning log_use_id;`;
 
 export const updDeacToken = `UPDATE
                                     "user".use_login

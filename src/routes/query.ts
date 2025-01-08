@@ -54,11 +54,29 @@ export const selRoutes = `select
 
 
 export function selApi({ token = '', url = '', httpMethod = '' }) {
+    let token_filter = token ? token.replace('Bearer ', '') : 'asd';
     let queryX = `select
                     gat_uri,
                     gat_token_valid,
                     gat_permission_valid,
                     gat_condition_valid,
+                    crt.req_typ_method,
+                    (
+                        select
+                            jsonb_agg(t)
+                        from
+                            (
+                                select
+                                    agc.gat_con_condition,
+                                    gat_con_aditional
+                                from
+                                    api.api_gateway_condition agc
+                                where
+                                    ag.gat_id = agc.gat_con_gat_id
+                                    and agc.gat_con_sta_id = 20
+                                order by gat_con_weight desc
+                            ) t
+                    ) conditions,
                     (
                         case
                             when gat_permission_valid = true
@@ -75,7 +93,7 @@ export function selApi({ token = '', url = '', httpMethod = '' }) {
                                             and uu.use_sta_id = 1
                                             and ul.log_sta_id = 15
                                             and ul.log_deactivation_date > now()
-                                            and ul.log_token = '${token}'
+                                            and ul.log_token = '${token_filter}'
                                             join "user".use_user_permission uup on uup.use_per_per_id = agp.gat_per_per_id
                                             and uup.use_per_sta_id = 9
                                             and uu.use_id = uup.use_per_use_id
@@ -105,10 +123,9 @@ export function selApi({ token = '', url = '', httpMethod = '' }) {
                     api.api_gateway ag
                     join config.con_request_type crt on crt.req_typ_id = ag.gat_req_typ_id
                 where
-                    ag.gat_uri = '${url}'
+                    '${url}' ~ ag.gat_uri
                     and upper('${httpMethod}') = crt.req_typ_method
                     and gat_sta_id = 11;`;
     // log({value: queryX });
     return queryX;
-
 }

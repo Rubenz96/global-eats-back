@@ -41,22 +41,24 @@ export async function login(req: Request, res: Response) {
 
         let token = sign(tokenData, seedToken, { expiresIn: 60 * 60 * 24 });
         let resSelPageComponent = await client.query(selPageConfig({ use_id: dataUser.rows[0].use_id }));
-
-        log({ value: resSelPageComponent });
-        log({ value: tokenData });
-        log({ value: token });
         // let sidebar = await client.query(selSidebarConfig);
 
-        if (token && tokenData) {
-            // log({ msg: 'Entra' });
+        // log({ value: resSelPageComponent });
+        log({ value: tokenData });
+        log({ value: token });
 
-            await client.query(insLogin, [dataUser.rows[0].use_id, token]);
+        if (token && tokenData) {
+            log({ description: 'Entra' });
+
+            let dataLogin = await client.query(insLogin, [dataUser.rows[0].use_id, token]);
+            log({ value: dataLogin });
+
             await client.query('COMMIT');
             return res.status(OK).json({
                 msg: "Login exitoso",
                 userData: tokenData,
                 token: token,
-                permissions: resSelPageComponent.rows
+                permissions: resSelPageComponent.rows,
                 // sidebar: sidebar.rows
             });
         } else {
@@ -65,6 +67,8 @@ export async function login(req: Request, res: Response) {
             });
         }
     } catch (error) {
+        console.log(error);
+
         await client.query('ROLLBACK');
         return res.status(NOT_FOUND).json({
             msg: "Error inesperado"
