@@ -1,9 +1,10 @@
-INSERT INTO
-    product.pro_cal_con_product (
-        cal_con_pro_pro_id,
-        cal_con_pro_con_id,
-        cal_con_pro_cal_id,
-        cal_con_pro_quantity
-    )
-VALUES
-(0, 0, 0, 0)
+select
+    uu.use_id,
+    concat(uu.use_name, ' ', uu.use_lastname) as nombre,
+    uu.use_sta_id,
+    uu.use_username,
+    uu.use_creation_date,
+    cs.sta_value
+from
+    "user".use_user uu
+    join config.con_status cs on cs.sta_id = uu.use_sta_id

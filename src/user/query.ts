@@ -124,3 +124,50 @@ export function selPageConfig({ use_id = 0 }) {
                         and uup.use_per_use_id = ${use_id};`;
     return queryX;
 }
+
+export function selUsers(filter = '') {
+    filter = filter ? filter.toLowerCase() : '';
+    let filtro = filter ? ` (lower(use_name) like '%${filter}%' or lower(use_lastname) like '%${filter}%' or lower(use_username) like '%${filter}%') ` : ` true `;
+    let queryX = `select
+                        uu.use_id,
+                        concat(uu.use_name, ' ', uu.use_lastname) as name,
+                        uu.use_sta_id,
+                        uu.use_username,
+                        uu.use_creation_date,
+                        upper(cs.sta_value) sta_value
+                    from
+                        "user".use_user uu
+                        join config.con_status cs on cs.sta_id = uu.use_sta_id
+                    where 
+                        ${filtro}
+                    order by
+                        uu.use_name asc
+                    LIMIT
+                        $1 OFFSET (($2 - 1) * $1);`;
+    console.log(queryX);
+    return queryX;
+}
+
+export function countUsers(filter = '') {
+    filter = filter ? filter.toLowerCase() : '';
+    let filtro = filter ? ` (lower(use_name) like '%${filter}%' or lower(use_lastname) like '%${filter}%' or lower(use_username) like '%${filter}%') ` : ` true `;
+    let queryX = `select
+                        quantity,
+                        (
+                        case
+                            when quantity / $1 :: numeric > round(quantity / $1, 0) then round(quantity / $1, 0) + 1
+                            else round(quantity / $1, 0)
+                        end
+                        ) as pages
+                    from
+                        (
+                            select
+                                count(*) as quantity
+                            from
+                                "user".use_user uu
+                                join config.con_status cs on cs.sta_id = uu.use_sta_id
+                            where 
+                                ${filtro}
+                        ) t;`;
+    return queryX;
+}
