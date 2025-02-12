@@ -130,6 +130,7 @@ export function selUsers(filter = '') {
     let filtro = filter ? ` (lower(use_name) like '%${filter}%' or lower(use_lastname) like '%${filter}%' or lower(use_username) like '%${filter}%') ` : ` true `;
     let queryX = `select
                         uu.use_id,
+                        uu.use_id_,
                         concat(uu.use_name, ' ', uu.use_lastname) as name,
                         uu.use_sta_id,
                         uu.use_username,
@@ -171,3 +172,10 @@ export function countUsers(filter = '') {
                         ) t;`;
     return queryX;
 }
+
+export const updUserDeac = `UPDATE
+                            "user".use_user
+                            SET
+                                use_sta_id = 2
+                            WHERE
+                            use_id_ = $1;`;

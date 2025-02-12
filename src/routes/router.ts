@@ -7,7 +7,6 @@ router.use(routeValid, tokenValid, userValid, userPermissionValid, dataValid);
 import routerAuth from '../auth/router';
 router.use('/auth', routerAuth);
 
-
 import routerUser from '../user/router';
 router.use('/user', routerUser);
 
@@ -20,5 +19,7 @@ router.use('/client', routerClient);
 import routerPlatform from '../platform/router';
 router.use('/page', routerPlatform);
 
+import routerPermission from '../permission/router';
+router.use('/permission', routerPermission);
 
 export default router;

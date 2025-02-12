@@ -21,7 +21,7 @@ export const getApiGateway = () => {
         })
 }
 // setInterval( () => getApiGateway(), 60*60*1000)
-getApiGateway(); //Se cargan al inicio y debe actalizarse cuando se hacen cambios
+// getApiGateway(); //Se cargan al inicio y debe actalizarse cuando se hacen cambios
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////     Validacion de la ruta      ////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ export const routeValid = (req: Request, res: Response, next: NextFunction) => {
     let token = req.headers['authorization'];
     poolSelect.query(selApi({ token, httpMethod: req.method, url: req.originalUrl }))
         .then(result => {
-            if (result.rowCount == 0 ) {
+            if (result.rowCount == 0) {
                 log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Error en ruta' });
                 return res.status(BAD_GATEWAY).send({ msg: 'Ruta no existe' });
             }
@@ -75,16 +75,20 @@ export const routeValid = (req: Request, res: Response, next: NextFunction) => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Valida el token, si la ruta no está en el listado de rutas qe no se le valida el token
 export const tokenValid = (req: Request, res: Response, next: NextFunction) => {
-    if (req.info_route && req.info_route.gat_token_valid && req.user) {
+    if (req.info_route && req.info_route.gat_token_valid) {
         //   let token = servicios.desencriptar(req.headers['authorization']);
-        let token = req.headers['authorization'];
-        // console.log(token);
+        if (req.user) {
+            let token = req.headers['authorization'];
+            // console.log(token);
 
-        if (!token) {
-            log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Error JWT: Es necesario el token de autenticación' });
+            if (!token) {
+                log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Error JWT: Es necesario el token de autenticación' });
+                return res.status(TOKEN_EXPIRED).send({ msg: 'Es necesario el token de autenticación' })
+            }
+            next();
+        } else {
             return res.status(TOKEN_EXPIRED).send({ msg: 'Es necesario el token de autenticación' })
         }
-        next();
 
     }
     else {
@@ -131,7 +135,7 @@ export const userPermissionValid = (req: Request, res: Response, next: NextFunct
         } else {
             log({ type: 'ERROR', routeType: req.method, route: req.originalUrl, description: 'Permiso no asignado.' });
             return res.status(UNAUTHORIZED).send({ msg: 'Solicitud no autorizada' });
-        } 
+        }
     } else {
         log({ routeType: req.method, route: req.originalUrl, description: 'No es necesario validar permiso.' });
         next();

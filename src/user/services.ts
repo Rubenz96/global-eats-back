@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { pool } from '../../config/db';
 import { log } from '../../config/log';
 import { NOT_FOUND, OK } from '../../config/status_code';
-import { countUsers, selPageConfig, selUser, selUsers, selUserSideBarPermission, updUser } from './query';
+import { countUsers, selPageConfig, selUser, selUsers, selUserSideBarPermission, updUser, updUserDeac } from './query';
 
 export async function sidebarConfig(req: Request, res: Response) {
     const client = await pool.connect();
@@ -35,8 +35,8 @@ export async function getUserBBDD(req: Request, res: Response) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        let user_id_ = req.user?.use_id_;
-        let resUser = await client.query(selUser, [user_id_]);
+        let use_id_ = req.user?.use_id_;
+        let resUser = await client.query(selUser, [use_id_]);
         await client.query('COMMIT');
         return res.status(OK).json({
             user: (resUser && resUser.rowCount && resUser.rowCount > 0) ? resUser.rows[0] : false,
@@ -54,9 +54,9 @@ export async function setUserBBDD(req: Request, res: Response) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        let user_id_ = req.user?.use_id_;
+        let use_id_ = req.user?.use_id_;
         let { name, lastname, username, } = req.body;
-        let resUser = await client.query(updUser, [name, lastname, username, user_id_]);
+        let resUser = await client.query(updUser, [name, lastname, username, use_id_]);
         await client.query('COMMIT');
         return res.status(OK).json({
             user: (resUser && resUser.rowCount && resUser.rowCount > 0) ? resUser.rows[0] : false,
@@ -101,6 +101,34 @@ export async function listUsers(req: Request, res: Response) {
                     filter
                 }
             });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        log({ value: error });
+        return res.status(NOT_FOUND).json({
+            msg: "Error"
+        });
+    } finally {
+        client.release();
+    }
+}
+
+export async function delProduct(req: Request, res: Response) {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        let use_id = req.user?.use_id;
+        const { use_id_ } = req.body;
+        let resDelUser = await client.query(updUserDeac, [use_id_]);
+        if (!resDelUser.rowCount || resDelUser.rowCount == 0) {
+            return res.status(NOT_FOUND).json({
+                msg: "Error al desactivar usuario"
+            });
+        }
+        await client.query('COMMIT');
+        return res.status(OK).json({
+            msg: "Exitoso",
+        });
+
     } catch (error) {
         await client.query('ROLLBACK');
         log({ value: error });

@@ -1,10 +1,10 @@
 select
-    uu.use_id,
-    concat(uu.use_name, ' ', uu.use_lastname) as nombre,
-    uu.use_sta_id,
-    uu.use_username,
-    uu.use_creation_date,
-    cs.sta_value
+    per_id as id,
+    concat(per_typ_description, ' | ', per_description) as name
 from
-    "user".use_user uu
-    join config.con_status cs on cs.sta_id = uu.use_sta_id
+    config.con_permission cp
+    join config.con_permission_type cpt on cpt.per_typ_id = cp.per_per_typ_id
+    and cp.per_sta_id = 7
+order by
+    cpt.per_typ_description asc,
+    cp.per_description asc;
