@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from "express";
 import { poolSelect } from "../../config/db";
 import { log } from "../../config/log";
-import { validatePassword } from "../services/general";
 import { selApi, selRoutes } from "./query";
 import { BAD_GATEWAY, TOKEN_EXPIRED, UNAUTHORIZED } from "../../config/status_code";
 import { Route } from "../models/route";
@@ -177,3 +176,24 @@ export const dataValid = (req: Request, res: Response, next: NextFunction) => {
         next();
     }
 };
+
+function validatePassword(password: string): boolean {
+    try {
+        // Expresión regular para verificar los requisitos de la contraseña
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+        return passwordRegex.test(password);
+    } catch (error) {
+        return false;
+    }
+}
+
+
+function validateEmail(email: string): boolean {
+    console.log(email);
+
+    let emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!email || email.trim() === '') {
+        return false;
+    }
+    return emailRegex.test(email.trim());
+}

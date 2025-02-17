@@ -51,16 +51,6 @@ export function verifyFolder(folder: string): boolean {
     }
 }
 
-export function validatePassword(password: string): boolean {
-    try {
-        // Expresión regular para verificar los requisitos de la contraseña
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$/;
-        return passwordRegex.test(password);
-    } catch (error) {
-        return false;
-    }
-}
-
 export function orderData(data: any[]) {
     // const columnOrder = ['id', 'created_at', 'author_id', 'text', 'lang', 'conversation_id'];
     const columnOrder = ['lang', 'text', 'created_at', 'text', 'referenced_tweets[0].type', 'conversation_id', 'id'];

@@ -126,6 +126,6 @@ export function selApi({ token = '', url = '', httpMethod = '' }) {
                     '${url}' ~ ag.gat_uri
                     and upper('${httpMethod}') = crt.req_typ_method
                     and gat_sta_id = 11;`;
-    log({value: queryX });
+    // log({value: queryX });
     return queryX;
 }
