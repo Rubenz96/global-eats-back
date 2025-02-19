@@ -35,12 +35,12 @@ export async function getUserBBDD(req: Request, res: Response) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        let use_id_ = req.user?.use_id_;
-        let resUser = await client.query(selUser, [use_id_]);
+        let user_id_ = req.params.user_id_;
+        console.log(req.params);
+
+        let resUser = await client.query(selUser, [user_id_]);
         await client.query('COMMIT');
-        return res.status(OK).json({
-            user: (resUser && resUser.rowCount && resUser.rowCount > 0) ? resUser.rows[0] : false,
-        });
+        return res.status(OK).json((resUser && resUser.rowCount && resUser.rowCount > 0) ? resUser.rows[0] : false);
 
     } catch (error) {
         await client.query('ROLLBACK');

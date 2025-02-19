@@ -7,6 +7,8 @@ routerUser.post('/permission', user.sidebarConfig);
 routerUser.post('/list', user.listUsers);
 routerUser.post('/delete', user.delUser);
 routerUser.post('/new', user.createUser);
+routerUser.post('/edit', user.createUser);
+routerUser.get('/:user_id_', user.getUserBBDD);
 
 // routerUser.post('/logout', user.logout);
 // routerUser.post('/recovery', user.recovery); 
