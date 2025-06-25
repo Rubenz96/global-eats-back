@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { pool } from '../../config/db';
 import { log } from '../../config/log';
 import { NOT_FOUND, OK } from '../../config/status_code';
-import { countUsers, insPermissions, insUser, selPageConfig, selUser, selUsers, selUserSideBarPermission, updUser, updUserDeac } from './query';
+import { countUsers, insHistory, insPermissions, insUser, selPageConfig, selUser, selUsers, selUserSideBarPermission, updUser, updUserDeac } from './query';
 
 export async function sidebarConfig(req: Request, res: Response) {
     const client = await pool.connect();
@@ -64,7 +64,7 @@ export async function setUserBBDD(req: Request, res: Response) {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        // log({ msg: error });
+        log({ msg: error });
     } finally {
         client.release();
     }
@@ -155,6 +155,50 @@ export async function createUser(req: Request, res: Response) {
             });
         }
         let resInsPermissions = await client.query(insPermissions({ use_id: resInsUser.rows[0].use_id, permissions: body.permissions }));
+
+        await client.query('COMMIT');
+        return res.status(OK).json({
+            msg: "Exitoso",
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        log({ value: error });
+        return res.status(NOT_FOUND).json({
+            msg: "Error"
+        });
+    } finally {
+        client.release();
+    }
+}
+
+export async function editUser(req: Request, res: Response) {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        let use_id = req.user?.use_id;
+        const body = req.body;
+        console.log(body);
+        let user_id_ = body.user_id_;
+
+        let resUser = await client.query(selUser, [user_id_]);
+        console.log(resUser.rows[0]);
+        
+        // let resInsUser = await client.query(insUser(body));
+        // if (!resInsUser.rowCount || resInsUser.rowCount == 0) {
+        //     return res.status(NOT_FOUND).json({
+        //         msg: "Error al crear usuario"
+        //     });
+        // }
+        // let resInsPermissions = await client.query(insPermissions({ use_id: resInsUser.rows[0].use_id, permissions: body.permissions }));
+
+        // let resInsHistory = await client.query(insHistory({
+        //     use_id: resUser.rows[0].use_id,
+        //     modifier_use_id: use_id,
+        //     old_metadata: resUser.rows[0],
+        //     new_metadata: body
+        // }));
+
 
         await client.query('COMMIT');
         return res.status(OK).json({

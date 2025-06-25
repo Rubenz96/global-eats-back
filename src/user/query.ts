@@ -110,7 +110,9 @@ export const selUser = `select
                                             and cp.per_sta_id = 7
                                             join config.con_permission_type cpt on cpt.per_typ_id = cp.per_per_typ_id
                                     ) as t
-                            ) as permissions
+                            ) as permissions,
+                            uu.use_id,
+                            uu.use_id_ as user_id_
                         from
                             "user".use_user uu
                         where
@@ -220,5 +222,23 @@ export function insPermissions({ use_id = '', permissions = [] }) {
                     where
                         cp.per_sta_id = 7
                         and cp.per_id in (${permissions.join(',')});`;
+    return queryX;
+}
+
+export function insHistory({ old_metadata = {}, new_metadata = {}, modifier_use_id = 0, use_id = 0 }) {
+    let queryX = `INSERT INTO
+                        "user".use_user_history (
+                            use_his_use_id,
+                            use_his_old_metadata,
+                            use_his_new_metadata,
+                            use_his_modifier_use_id
+                        )
+                    VALUES
+                        (
+                            ${use_id},
+                            '${JSON.stringify(old_metadata)}' :: json,
+                            '${JSON.stringify(new_metadata)}' :: json,
+                            ${modifier_use_id}
+                        );`;
     return queryX;
 }
